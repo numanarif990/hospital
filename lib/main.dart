@@ -90,18 +90,27 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
   @override
   void initState() {
     super.initState();
-    _loadDefaultValues();
+    _loadSavedFields();
   }
 
-  void _loadDefaultValues() {
-    // Set default values for testing
-    _doctorNameController.text = 'Gen. Physician-MFH';
-    _patientNameController.text = 'usman';
-    _ageController.text = '45';
-    _regNumberController.text = '3570';
-    _sessionNumberController.text = '45';
-    _consultationNumberController.text = '3456';
-    _tokenNumberController.text = '5';
+  Future<void> _loadSavedFields() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _regNumberController.text = prefs.getString('reg_number') ?? '3570';
+      _sessionNumberController.text = prefs.getString('session_number') ?? '45';
+      _consultationNumberController.text =
+          prefs.getString('consultation_number') ?? '3456';
+      _tokenNumberController.text = prefs.getString('token_number') ?? '5';
+      // Optionally load other fields if needed
+      _doctorNameController.text = 'Gen. Physician-MFH';
+      _patientNameController.text = 'usman';
+      _ageController.text = '45';
+    });
+  }
+
+  Future<void> _saveField(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
   }
 
   @override
@@ -391,6 +400,18 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               return null;
             }
           : null,
+      onChanged: (value) {
+        // Save to SharedPreferences if this is a tracked field
+        if (controller == _regNumberController) {
+          _saveField('reg_number', value);
+        } else if (controller == _sessionNumberController) {
+          _saveField('session_number', value);
+        } else if (controller == _consultationNumberController) {
+          _saveField('consultation_number', value);
+        } else if (controller == _tokenNumberController) {
+          _saveField('token_number', value);
+        }
+      },
     );
   }
 
@@ -429,11 +450,22 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
     });
 
     try {
+      // Save tracked fields before printing
+      await _saveField('reg_number', _regNumberController.text);
+      await _saveField('session_number', _sessionNumberController.text);
+      await _saveField(
+        'consultation_number',
+        _consultationNumberController.text,
+      );
+      await _saveField('token_number', _tokenNumberController.text);
+
       final pdf = await _generateOPDSlipPDF();
 
       // Check for default printer
       final prefs = await SharedPreferences.getInstance();
       final defaultPrinter = prefs.getString('default_printer');
+
+      bool printSuccess = false;
 
       if (defaultPrinter == null) {
         // First time - show printer selection dialog
@@ -447,6 +479,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
             printer: printer,
             onLayout: (PdfPageFormat format) async => pdf.save(),
           );
+          printSuccess = true;
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -472,6 +505,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
             printer: Printer(name: defaultPrinter, url: ''),
             onLayout: (PdfPageFormat format) async => pdf.save(),
           );
+          printSuccess = true;
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -492,6 +526,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               printer: printer,
               onLayout: (PdfPageFormat format) async => pdf.save(),
             );
+            printSuccess = true;
 
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -505,6 +540,32 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
             }
           }
         }
+      }
+
+      // Increment numbers only if print was successful
+      if (printSuccess) {
+        int reg = int.tryParse(_regNumberController.text) ?? 0;
+        int session = int.tryParse(_sessionNumberController.text) ?? 0;
+        int consult = int.tryParse(_consultationNumberController.text) ?? 0;
+        int token = int.tryParse(_tokenNumberController.text) ?? 0;
+
+        reg += 3;
+        session =
+            session; // No increment for session as per your last request, but if needed, change here
+        consult += 2;
+        token += 1;
+
+        setState(() {
+          _regNumberController.text = reg.toString();
+          _sessionNumberController.text = session.toString();
+          _consultationNumberController.text = consult.toString();
+          _tokenNumberController.text = token.toString();
+        });
+
+        await _saveField('reg_number', reg.toString());
+        await _saveField('session_number', session.toString());
+        await _saveField('consultation_number', consult.toString());
+        await _saveField('token_number', token.toString());
       }
     } catch (e) {
       if (mounted) {
