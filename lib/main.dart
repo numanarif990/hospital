@@ -677,7 +677,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
               // OPD Consultation Slip Header - Centered and underlined
               pw.Container(
-                width: double.infinity,
+                width: 170,
                 child: pw.Column(
                   children: [
                     pw.Text(
@@ -702,22 +702,35 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
               // Token Number in Circle - Centered
               pw.Center(
-                child: pw.Container(
-                  width: 35,
-                  height: 35,
-                  decoration: pw.BoxDecoration(
-                    shape: pw.BoxShape.circle,
-                    border: pw.Border.all(width: 2),
-                  ),
-                  child: pw.Center(
-                    child: pw.Text(
-                      _tokenNumberController.text,
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  children: [
+                    pw.Text(
+                      'Token No:',
                       style: pw.TextStyle(
-                        fontSize: 16,
+                        fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
-                  ),
+                    pw.SizedBox(width: 10),
+                    pw.Container(
+                      width: 35,
+                      height: 35,
+                      decoration: pw.BoxDecoration(
+                        shape: pw.BoxShape.circle,
+                        border: pw.Border.all(width: 2),
+                      ),
+                      child: pw.Center(
+                        child: pw.Text(
+                          _tokenNumberController.text,
+                          style: pw.TextStyle(
+                            fontSize: 16,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               pw.SizedBox(height: 12),
@@ -725,30 +738,33 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Doctor Information - Left aligned
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'Physician: ${_doctorNameController.text}',
-                      style: pw.TextStyle(
-                        fontSize: 10,
-                        fontWeight: pw.FontWeight.bold,
+                child: pw.SizedBox(
+                  width: 160,
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        'Physician: ${_doctorNameController.text}',
+                        style: pw.TextStyle(
+                          fontSize: 10,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
                       ),
-                    ),
 
-                    pw.Container(
-                      width: double.infinity,
-                      height: 1,
-                      decoration: const pw.BoxDecoration(
-                        border: pw.Border(bottom: pw.BorderSide(width: 1)),
+                      pw.Container(
+                        width: double.infinity,
+                        height: 1,
+                        decoration: const pw.BoxDecoration(
+                          border: pw.Border(bottom: pw.BorderSide(width: 1)),
+                        ),
                       ),
-                    ),
-                    pw.SizedBox(height: 4),
-                    pw.Text(
-                      'General Physician',
-                      style: const pw.TextStyle(fontSize: 10),
-                    ),
-                  ],
+                      pw.SizedBox(height: 4),
+                      pw.Text(
+                        'General Physician',
+                        style: const pw.TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               pw.SizedBox(height: 12),
@@ -810,7 +826,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text(
-                                'S/O: ${_soController.text.isEmpty ? "----" : _soController.text}',
+                                'S/O: ${_soController.text.isEmpty ? "-" : _soController.text}',
                                 style: pw.TextStyle(
                                   fontSize: 8.5,
                                   fontWeight: pw.FontWeight.bold,
@@ -830,11 +846,11 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text(
-                                'Age: ${_ageController.text}/${_selectedGender == 'Male'
-                                    ? 'M'
+                                'Age: ${_ageController.text}Y / ${_selectedGender == 'Male'
+                                    ? 'Male'
                                     : _selectedGender == 'Female'
-                                    ? 'F'
-                                    : 'O'}',
+                                    ? 'Female'
+                                    : 'Other'}',
                                 style: pw.TextStyle(
                                   fontSize: 8.5,
                                   fontWeight: pw.FontWeight.bold,
