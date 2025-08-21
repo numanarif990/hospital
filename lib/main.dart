@@ -16,8 +16,39 @@ void main() {
   runApp(const HospitalApp());
 }
 
-class HospitalApp extends StatelessWidget {
+class HospitalApp extends StatefulWidget {
   const HospitalApp({super.key});
+
+  @override
+  State<HospitalApp> createState() => _HospitalAppState();
+}
+
+class _HospitalAppState extends State<HospitalApp> {
+  bool _showPasswordScreen = true;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPasswordStatus();
+  }
+
+  Future<void> _checkPasswordStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final entered = prefs.getBool('password_entered') ?? false;
+    setState(() {
+      _showPasswordScreen = !entered;
+      _loading = false;
+    });
+  }
+
+  void _onPasswordSuccess() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('password_entered', true);
+    setState(() {
+      _showPasswordScreen = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +90,132 @@ class HospitalApp extends StatelessWidget {
           labelStyle: TextStyle(color: Color(0xFFBBBBBB)),
         ),
       ),
-      home: const HospitalMainScreen(),
+      home: _loading
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          : _showPasswordScreen
+          ? PasswordScreen(onSuccess: _onPasswordSuccess)
+          : const HospitalMainScreen(),
+    );
+  }
+}
+
+class PasswordScreen extends StatefulWidget {
+  final VoidCallback onSuccess;
+  const PasswordScreen({super.key, required this.onSuccess});
+
+  @override
+  State<PasswordScreen> createState() => _PasswordScreenState();
+}
+
+class _PasswordScreenState extends State<PasswordScreen> {
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _obscure = true;
+  bool _error = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _checkPassword() {
+    if (_formKey.currentState!.validate()) {
+      if (_passwordController.text == '2004') {
+        widget.onSuccess();
+      } else {
+        setState(() {
+          _error = true;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E1E1E),
+      body: Center(
+        child: Card(
+          color: const Color(0xFF23272F),
+          elevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+            child: SizedBox(
+              width: 350,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Enter Password',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscure,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(color: Color(0xFFBBBBBB)),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscure ? Icons.visibility : Icons.visibility_off,
+                            color: Colors.white70,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscure = !_obscure;
+                            });
+                          },
+                        ),
+                        errorText: _error ? 'Incorrect password' : null,
+                      ),
+                      onFieldSubmitted: (_) => _checkPassword(),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: _checkPassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1976D2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
