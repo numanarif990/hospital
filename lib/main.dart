@@ -72,6 +72,15 @@ class HospitalMainScreen extends StatefulWidget {
 }
 
 class _HospitalMainScreenState extends State<HospitalMainScreen> {
+  // Focus nodes for each field
+  final _patientNameFocus = FocusNode();
+  final _soFocus = FocusNode();
+  final _ageFocus = FocusNode();
+  final _regNumberFocus = FocusNode();
+  final _sessionNumberFocus = FocusNode();
+  final _consultationNumberFocus = FocusNode();
+  final _tokenNumberFocus = FocusNode();
+  final _doctorNameFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
 
   // Controllers for form fields
@@ -123,6 +132,14 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
     _consultationNumberController.dispose();
     _doctorNameController.dispose();
     _tokenNumberController.dispose();
+    _patientNameFocus.dispose();
+    _soFocus.dispose();
+    _ageFocus.dispose();
+    _regNumberFocus.dispose();
+    _sessionNumberFocus.dispose();
+    _consultationNumberFocus.dispose();
+    _tokenNumberFocus.dispose();
+    _doctorNameFocus.dispose();
     super.dispose();
   }
 
@@ -224,6 +241,11 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               controller: _patientNameController,
                               label: 'Patient Name',
                               isRequired: true,
+                              focusNode: _patientNameFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context).requestFocus(_soFocus);
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -231,6 +253,11 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                             child: _buildTextField(
                               controller: _soController,
                               label: 'S/O (Son/Daughter of)',
+                              focusNode: _soFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context).requestFocus(_ageFocus);
+                              },
                             ),
                           ),
                         ],
@@ -246,6 +273,13 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               label: 'Age',
                               isRequired: true,
                               keyboardType: TextInputType.number,
+                              focusNode: _ageFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(
+                                  context,
+                                ).requestFocus(_regNumberFocus);
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -263,6 +297,13 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               label: 'Registration Number (Reg #)',
                               isRequired: true,
                               keyboardType: TextInputType.number,
+                              focusNode: _regNumberFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(
+                                  context,
+                                ).requestFocus(_sessionNumberFocus);
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -272,6 +313,13 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               label: 'Session #',
                               isRequired: true,
                               keyboardType: TextInputType.number,
+                              focusNode: _sessionNumberFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(
+                                  context,
+                                ).requestFocus(_consultationNumberFocus);
+                              },
                             ),
                           ),
                         ],
@@ -287,6 +335,13 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               label: 'Consultation Number (Con #)',
                               isRequired: true,
                               keyboardType: TextInputType.number,
+                              focusNode: _consultationNumberFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(
+                                  context,
+                                ).requestFocus(_tokenNumberFocus);
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -296,6 +351,13 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               label: 'Token Number',
                               isRequired: true,
                               keyboardType: TextInputType.number,
+                              focusNode: _tokenNumberFocus,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(
+                                  context,
+                                ).requestFocus(_doctorNameFocus);
+                              },
                             ),
                           ),
                         ],
@@ -307,6 +369,11 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                         controller: _doctorNameController,
                         label: 'Doctor Name',
                         isRequired: true,
+                        focusNode: _doctorNameFocus,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).unfocus();
+                        },
                       ),
                       const SizedBox(height: 32),
 
@@ -382,13 +449,17 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
     required String label,
     bool isRequired = false,
     TextInputType? keyboardType,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    ValueChanged<String>? onFieldSubmitted,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      inputFormatters: [
-        _CapitalizeFirstLetterFormatter(),
-      ],
+      focusNode: focusNode,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
+      inputFormatters: [_CapitalizeFirstLetterFormatter()],
       decoration: InputDecoration(
         labelText: isRequired ? '$label *' : label,
         labelStyle: TextStyle(
@@ -416,10 +487,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
         }
       },
     );
-
-
   }
-  
 
   Widget _buildGenderDropdown() {
     return DropdownButtonFormField<String>(
@@ -683,7 +751,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
               // OPD Consultation Slip Header - Centered and underlined
               pw.Container(
-                width: 170,
+                width: 165,
                 child: pw.Column(
                   children: [
                     pw.Text(
@@ -709,8 +777,10 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Token Number in Circle - Centered
               pw.Center(
                 child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
+                    pw.SizedBox(width: 30),
+
                     pw.Text(
                       'Token No:',
                       style: pw.TextStyle(
@@ -745,7 +815,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               pw.Align(
                 alignment: pw.Alignment.centerLeft,
                 child: pw.SizedBox(
-                  width: 160,
+                  width: 150,
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
@@ -759,7 +829,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                       pw.Container(
                         width: double.infinity,
-                        height: 1,
+                        height: 0.6,
                         decoration: const pw.BoxDecoration(
                           border: pw.Border(bottom: pw.BorderSide(width: 1)),
                         ),
@@ -800,7 +870,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               pw.SizedBox(height: 1),
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.5,
+                                height: 0.3,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -821,7 +891,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.5,
+                                height: 0.3,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -842,7 +912,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.5,
+                                height: 0.3,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -866,7 +936,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.5,
+                                height: 0.3,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -910,7 +980,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.5,
+                              height: 0.3,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -943,7 +1013,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.5,
+                              height: 0.3,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -977,7 +1047,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.5,
+                              height: 0.3,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -992,7 +1062,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Separator Line
               pw.Container(
                 width: double.infinity,
-                height: 1,
+                height: 0.3,
                 decoration: const pw.BoxDecoration(
                   border: pw.Border(bottom: pw.BorderSide(width: 1)),
                 ),
@@ -1006,7 +1076,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                   children: [
                     pw.Container(
                       width: 80,
-                      height: 1,
+                      height: 0.3,
                       decoration: const pw.BoxDecoration(
                         border: pw.Border(bottom: pw.BorderSide(width: 1)),
                       ),
@@ -1022,7 +1092,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                     pw.SizedBox(height: 4),
                     pw.Container(
                       width: 80,
-                      height: 1,
+                      height: 0.3,
                       decoration: const pw.BoxDecoration(
                         border: pw.Border(bottom: pw.BorderSide(width: 1)),
                       ),
@@ -1044,7 +1114,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Separator Line
               pw.Container(
                 width: double.infinity,
-                height: 1,
+                height: 0.3,
                 decoration: const pw.BoxDecoration(
                   border: pw.Border(bottom: pw.BorderSide(width: 1)),
                 ),
@@ -1067,14 +1137,15 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
     return pdf;
   }
-  
 }
 
 // Custom formatter to capitalize only the first letter of the field
 class _CapitalizeFirstLetterFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.isEmpty) return newValue;
     final text = newValue.text;
     final first = text[0].toUpperCase();
