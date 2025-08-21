@@ -25,26 +25,8 @@ class HospitalApp extends StatefulWidget {
 
 class _HospitalAppState extends State<HospitalApp> {
   bool _showPasswordScreen = true;
-  bool _loading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkPasswordStatus();
-  }
-
-  Future<void> _checkPasswordStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final entered = prefs.getBool('password_entered') ?? false;
-    setState(() {
-      _showPasswordScreen = !entered;
-      _loading = false;
-    });
-  }
-
-  void _onPasswordSuccess() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('password_entered', true);
+  void _onPasswordSuccess() {
     setState(() {
       _showPasswordScreen = false;
     });
@@ -90,9 +72,7 @@ class _HospitalAppState extends State<HospitalApp> {
           labelStyle: TextStyle(color: Color(0xFFBBBBBB)),
         ),
       ),
-      home: _loading
-          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
-          : _showPasswordScreen
+      home: _showPasswordScreen
           ? PasswordScreen(onSuccess: _onPasswordSuccess)
           : const HospitalMainScreen(),
     );
