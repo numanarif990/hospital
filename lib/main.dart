@@ -386,6 +386,9 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      inputFormatters: [
+        _CapitalizeFirstLetterFormatter(),
+      ],
       decoration: InputDecoration(
         labelText: isRequired ? '$label *' : label,
         labelStyle: TextStyle(
@@ -413,7 +416,10 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
         }
       },
     );
+
+
   }
+  
 
   Widget _buildGenderDropdown() {
     return DropdownButtonFormField<String>(
@@ -826,7 +832,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
                               pw.Text(
-                                'S/O: ${_soController.text.isEmpty ? "-" : _soController.text}',
+                                'S/o: ${_soController.text.isEmpty ? "-" : _soController.text}',
                                 style: pw.TextStyle(
                                   fontSize: 8.5,
                                   fontWeight: pw.FontWeight.bold,
@@ -1060,5 +1066,24 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
     );
 
     return pdf;
+  }
+  
+}
+
+// Custom formatter to capitalize only the first letter of the field
+class _CapitalizeFirstLetterFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) return newValue;
+    final text = newValue.text;
+    final first = text[0].toUpperCase();
+    final rest = text.length > 1 ? text.substring(1) : '';
+    final newText = first + rest;
+    return newValue.copyWith(
+      text: newText,
+      selection: newValue.selection,
+      composing: TextRange.empty,
+    );
   }
 }
