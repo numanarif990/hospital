@@ -852,7 +852,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
       marginLeft: 15,
       marginRight: 15,
       marginTop: 15,
-      marginBottom: 15,
+      marginBottom: 80,
     );
 
     pdf.addPage(
@@ -1045,7 +1045,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.3,
+                                height: 0.6,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -1167,7 +1167,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.3,
+                              height: 0.6,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -1216,7 +1216,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Separator Line
               pw.Container(
                 width: double.infinity,
-                height: 0.3,
+                height: 0.6,
                 color: PdfColor.fromInt(0xFF000000),
               ),
               pw.SizedBox(height: 8),
