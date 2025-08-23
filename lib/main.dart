@@ -36,7 +36,7 @@ class _HospitalAppState extends State<HospitalApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'M.A.Q.M Hospital Management System',
+      title: 'USMAN CHAUDHARI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
