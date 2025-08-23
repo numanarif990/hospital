@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:printing/printing.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -671,97 +672,20 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
       final pdf = await _generateOPDSlipPDF();
 
-      // Check for default printer
-      final prefs = await SharedPreferences.getInstance();
-      final defaultPrinter = prefs.getString('default_printer');
-
-      bool printSuccess = false;
-
-      if (defaultPrinter == null) {
-        // First time - show printer selection dialog
-        final printer = await Printing.pickPrinter(context: context);
-        if (printer != null) {
-          // Save selected printer as default
-          await prefs.setString('default_printer', printer.name);
-
-          // Print to selected printer
-          await Printing.directPrintPdf(
-            printer: printer,
-            onLayout: (PdfPageFormat format) async => pdf.save(),
-          );
-          printSuccess = true;
-
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Printer "${printer.name}" set as default and slip printed successfully!',
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        } else {
-          // User cancelled printer selection, show preview instead
-          await Printing.layoutPdf(
-            onLayout: (PdfPageFormat format) async => pdf.save(),
-            name: 'OPD_Consultation_Slip_${_tokenNumberController.text}',
-          );
-        }
-      } else {
-        // Use saved default printer
-        try {
-          await Printing.directPrintPdf(
-            printer: Printer(name: defaultPrinter, url: ''),
-            onLayout: (PdfPageFormat format) async => pdf.save(),
-          );
-          printSuccess = true;
-
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'OPD slip printed successfully to default printer!',
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        } catch (e) {
-          // If default printer fails, show printer selection again
-          final printer = await Printing.pickPrinter(context: context);
-          if (printer != null) {
-            await prefs.setString('default_printer', printer.name);
-            await Printing.directPrintPdf(
-              printer: printer,
-              onLayout: (PdfPageFormat format) async => pdf.save(),
-            );
-            printSuccess = true;
-
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'New printer "${printer.name}" set as default and slip printed!',
-                  ),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            }
-          }
-        }
-      }
-
-      // Increment numbers only if print was successful
-      if (printSuccess) {
+      if (kIsWeb) {
+        // On web, always show print dialog
+        await Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf.save(),
+          name: 'OPD_Consultation_Slip_${_tokenNumberController.text}',
+        );
+        // Assume print is successful on web (cannot detect otherwise)
         int reg = int.tryParse(_regNumberController.text) ?? 0;
         int session = int.tryParse(_sessionNumberController.text) ?? 0;
         int consult = int.tryParse(_consultationNumberController.text) ?? 0;
         int token = int.tryParse(_tokenNumberController.text) ?? 0;
 
         reg += 3;
-        session =
-            session; // No increment for session as per your last request, but if needed, change here
+        session = session;
         consult += 2;
         token += 1;
 
@@ -776,6 +700,100 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
         await _saveField('session_number', session.toString());
         await _saveField('consultation_number', consult.toString());
         await _saveField('token_number', token.toString());
+      } else {
+        // Desktop/other platforms: keep existing logic
+        final prefs = await SharedPreferences.getInstance();
+        final defaultPrinter = prefs.getString('default_printer');
+        bool printSuccess = false;
+
+        if (defaultPrinter == null) {
+          final printer = await Printing.pickPrinter(context: context);
+          if (printer != null) {
+            await prefs.setString('default_printer', printer.name);
+            await Printing.directPrintPdf(
+              printer: printer,
+              onLayout: (PdfPageFormat format) async => pdf.save(),
+            );
+            printSuccess = true;
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Printer "${printer.name}" set as default and slip printed successfully!',
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
+          } else {
+            await Printing.layoutPdf(
+              onLayout: (PdfPageFormat format) async => pdf.save(),
+              name: 'OPD_Consultation_Slip_${_tokenNumberController.text}',
+            );
+          }
+        } else {
+          try {
+            await Printing.directPrintPdf(
+              printer: Printer(name: defaultPrinter, url: ''),
+              onLayout: (PdfPageFormat format) async => pdf.save(),
+            );
+            printSuccess = true;
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'OPD slip printed successfully to default printer!',
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
+          } catch (e) {
+            final printer = await Printing.pickPrinter(context: context);
+            if (printer != null) {
+              await prefs.setString('default_printer', printer.name);
+              await Printing.directPrintPdf(
+                printer: printer,
+                onLayout: (PdfPageFormat format) async => pdf.save(),
+              );
+              printSuccess = true;
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'New printer "${printer.name}" set as default and slip printed!',
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            }
+          }
+        }
+
+        if (printSuccess) {
+          int reg = int.tryParse(_regNumberController.text) ?? 0;
+          int session = int.tryParse(_sessionNumberController.text) ?? 0;
+          int consult = int.tryParse(_consultationNumberController.text) ?? 0;
+          int token = int.tryParse(_tokenNumberController.text) ?? 0;
+
+          reg += 3;
+          session = session;
+          consult += 2;
+          token += 1;
+
+          setState(() {
+            _regNumberController.text = reg.toString();
+            _sessionNumberController.text = session.toString();
+            _consultationNumberController.text = consult.toString();
+            _tokenNumberController.text = token.toString();
+          });
+
+          await _saveField('reg_number', reg.toString());
+          await _saveField('session_number', session.toString());
+          await _saveField('consultation_number', consult.toString());
+          await _saveField('token_number', token.toString());
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -930,7 +948,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                       height: 35,
                       decoration: pw.BoxDecoration(
                         shape: pw.BoxShape.circle,
-                        border: pw.Border.all(width: 2),
+                        border: pw.Border.all(width: 1.5),
                       ),
                       child: pw.Center(
                         child: pw.Text(
@@ -988,7 +1006,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                 children: [
                   // Left Column
                   pw.SizedBox(
-                    width: 100,
+                    width: 95,
                     child: pw.Expanded(
                       child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -1199,9 +1217,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               pw.Container(
                 width: double.infinity,
                 height: 0.3,
-                decoration: const pw.BoxDecoration(
-                  border: pw.Border(bottom: pw.BorderSide(width: 1)),
-                ),
+                color: PdfColor.fromInt(0xFF000000),
               ),
               pw.SizedBox(height: 8),
 
@@ -1213,9 +1229,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                     pw.Container(
                       width: 80,
                       height: 0.3,
-                      decoration: const pw.BoxDecoration(
-                        border: pw.Border(bottom: pw.BorderSide(width: 1)),
-                      ),
+                      color: PdfColor.fromInt(0xFF000000),
                     ),
                     pw.SizedBox(height: 4),
                     pw.Text(
@@ -1229,9 +1243,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                     pw.Container(
                       width: 80,
                       height: 0.3,
-                      decoration: const pw.BoxDecoration(
-                        border: pw.Border(bottom: pw.BorderSide(width: 1)),
-                      ),
+                      color: PdfColor.fromInt(0xFF000000),
                     ),
                   ],
                 ),
@@ -1251,9 +1263,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               pw.Container(
                 width: double.infinity,
                 height: 0.3,
-                decoration: const pw.BoxDecoration(
-                  border: pw.Border(bottom: pw.BorderSide(width: 1)),
-                ),
+                color: PdfColor.fromInt(0xFF000000),
               ),
               pw.SizedBox(height: 4),
 
