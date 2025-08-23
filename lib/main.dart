@@ -1024,7 +1024,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                               pw.SizedBox(height: 1),
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.3,
+                                height: 0.6,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -1066,7 +1066,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.3,
+                                height: 0.6,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -1090,7 +1090,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                               pw.Container(
                                 width: double.infinity,
-                                height: 0.3,
+                                height: 0.6,
                                 color: PdfColor.fromInt(0xFF000000),
                               ),
                             ],
@@ -1134,7 +1134,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.3,
+                              height: 0.6,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -1201,7 +1201,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
 
                             pw.Container(
                               width: double.infinity,
-                              height: 0.3,
+                              height: 0.6,
                               color: PdfColor.fromInt(0xFF000000),
                             ),
                           ],
@@ -1228,7 +1228,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                   children: [
                     pw.Container(
                       width: 80,
-                      height: 0.3,
+                      height: 0.6,
                       color: PdfColor.fromInt(0xFF000000),
                     ),
                     pw.SizedBox(height: 4),
@@ -1242,7 +1242,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
                     pw.SizedBox(height: 4),
                     pw.Container(
                       width: 80,
-                      height: 0.3,
+                      height: 0.6,
                       color: PdfColor.fromInt(0xFF000000),
                     ),
                   ],
@@ -1262,7 +1262,7 @@ class _HospitalMainScreenState extends State<HospitalMainScreen> {
               // Separator Line
               pw.Container(
                 width: double.infinity,
-                height: 0.3,
+                height: 0.6,
                 color: PdfColor.fromInt(0xFF000000),
               ),
               pw.SizedBox(height: 4),
