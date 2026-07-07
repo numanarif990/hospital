@@ -150,7 +150,7 @@
     fields.sessionNumber.value = loadField('session_number', '45');
     fields.consultationNumber.value = loadField('consultation_number', '3456');
     fields.tokenNumber.value = loadField('token_number', '5');
-    fields.doctorName.value = 'Gen. Physician-MFH';
+    fields.doctorName.value = 'Gen.Physician-MFH';
     fields.patientName.value = 'usman';
     fields.ageField.value = '45';
     fields.genderField.value = 'Male';
@@ -309,7 +309,7 @@
           </div>
           <div class="slip-info-row-right">
             <div class="info-row-content">
-              <span class="info-label">Session#:</span>
+              <span class="info-label">Session. #:</span>
               <span class="info-value">${sessionNum}</span>
             </div>
             <div class="info-line"></div>
