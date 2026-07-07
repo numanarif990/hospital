@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="M.A.Q.M Hospital Management System - OPD Consultation Slip Printing" />
+  <title>USMAN CHAUDHARI</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- ===== PASSWORD SCREEN ===== -->
+  <div id="passwordScreen" class="password-screen">
+    <div class="password-card">
+      <h1>Enter Password</h1>
+      <form id="passwordForm" novalidate>
+        <div class="password-input-group">
+          <input
+            type="password"
+            id="passwordInput"
+            placeholder="Password"
+            autocomplete="off"
+          />
+          <button type="button" id="togglePasswordBtn" class="toggle-password-btn" aria-label="Toggle password visibility">
+            👁️
+          </button>
+        </div>
+        <div id="passwordError" class="password-error"></div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MAIN APP SCREEN ===== -->
+  <div id="mainScreen" class="main-screen">
+    <!-- App Bar -->
+    <header class="app-bar">
+      <h1>M.A.Q.M Hospital Management System</h1>
+    </header>
+
+    <div class="content-wrapper">
+      <!-- Hospital Header Banner -->
+      <div class="hospital-header">
+        <div class="subtitle">WELCOME TO</div>
+        <div class="title">M.A.Q.M HOSPITAL</div>
+        <div class="tagline">OPD CONSULTATION SYSTEM</div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card">
+        <h2>Patient Information</h2>
+
+        <form id="patientForm" novalidate>
+          <!-- Row 1: Patient Name (2x) and S/O (1x) -->
+          <div class="form-row">
+            <div class="field wide">
+              <div class="form-field">
+                <label for="patientName" class="required">Patient Name *</label>
+                <input type="text" id="patientName" required />
+                <div class="field-error" id="patientNameError"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="form-field">
+                <label for="soField">S/O (Son/Daughter of)</label>
+                <input type="text" id="soField" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Age and Gender -->
+          <div class="form-row">
+            <div class="field">
+              <div class="form-field">
+                <label for="ageField" class="required">Age *</label>
+                <input type="number" id="ageField" required min="0" />
+                <div class="field-error" id="ageFieldError"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="form-field">
+                <label for="genderField" class="required">Gender *</label>
+                <select id="genderField" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="field-error" id="genderFieldError"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: Registration Number and Session Number -->
+          <div class="form-row">
+            <div class="field">
+              <div class="form-field">
+                <label for="regNumber" class="required">Registration Number (Reg #) *</label>
+                <input type="number" id="regNumber" required min="0" />
+                <div class="field-error" id="regNumberError"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="form-field">
+                <label for="sessionNumber" class="required">Session # *</label>
+                <input type="number" id="sessionNumber" required min="0" />
+                <div class="field-error" id="sessionNumberError"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4: Consultation Number and Token Number -->
+          <div class="form-row">
+            <div class="field">
+              <div class="form-field">
+                <label for="consultationNumber" class="required">Consultation Number (Con #) *</label>
+                <input type="number" id="consultationNumber" required min="0" />
+                <div class="field-error" id="consultationNumberError"></div>
+              </div>
+            </div>
+            <div class="field">
+              <div class="form-field">
+                <label for="tokenNumber" class="required">Token Number *</label>
+                <input type="number" id="tokenNumber" required min="0" />
+                <div class="field-error" id="tokenNumberError"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doctor Name (full width) -->
+          <div class="form-field full-width">
+            <label for="doctorName" class="required">Doctor Name *</label>
+            <input type="text" id="doctorName" required />
+            <div class="field-error" id="doctorNameError"></div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="buttons-area">
+            <button type="button" id="printBtn" class="print-btn">
+              <span class="print-icon">🖨️</span>
+              <span id="printBtnText">Print</span>
+            </button>
+          </div>
+
+          <!-- Reset Printer -->
+          <div class="reset-printer-area">
+            <button type="button" id="resetPrinterBtn" class="reset-printer-btn">
+              <span class="icon">⚙️</span>
+              Reset Default Printer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PRINT SLIP (Only visible during printing) ===== -->
+  <div id="printSlip" class="print-slip-container">
+    <!-- Populated dynamically by JS before print -->
+  </div>
+
+  <!-- ===== SNACKBAR ===== -->
+  <div id="snackbar" class="snackbar"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
