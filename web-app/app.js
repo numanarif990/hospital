@@ -283,15 +283,15 @@
             <div class="info-text">Date: ${dateStr}</div>
             <div class="info-line"></div>
           </div>
-          <div class="slip-info-row">
+          <div class="slip-info-row slip-info-row-special">
             <div class="info-text">Patient: ${patientName}</div>
             <div class="info-line"></div>
           </div>
-          <div class="slip-info-row">
+          <div class="slip-info-row slip-info-row-special">
             <div class="info-text">S/o: ${so}</div>
             <div class="info-line"></div>
           </div>
-          <div class="slip-info-row">
+          <div class="slip-info-row slip-info-row-special">
             <div class="info-text">Age: ${age}Y / ${gender}</div>
             <div class="info-line"></div>
           </div>

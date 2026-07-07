@@ -684,8 +684,10 @@ html, body {
   }
 
   .slip-right-col {
-    flex: 1;
+    flex: 0 0 64pt;
+    max-width: 64pt;
     min-width: 0;
+    margin-left: auto;
   }
 
   /* ===== Info Row (Left Column) ===== */
@@ -712,6 +714,12 @@ html, body {
     margin-top: 1pt;
   }
 
+  .slip-info-row-special .info-line {
+    width: 120%;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
+    margin-top: 1pt;
+  }
   /* ===== Info Row with Flex (Right Column) ===== */
   /* Flutter: Each row = Row [ Expanded(label), value ] both 8.5pt bold
      + SizedBox(height:1) + line (height 0.6, solid black)
@@ -726,15 +734,18 @@ html, body {
 
   .slip-info-row-right .info-row-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: baseline;
+    gap: 2pt;
+    width: 100%;
   }
 
   .slip-info-row-right .info-label {
     font-size: 8.5pt;
     font-weight: bold;
     line-height: 1.15;
-    flex: 1;
+    flex: 0 0 22pt;
+    white-space: nowrap;
   }
 
   .slip-info-row-right .info-value {
@@ -742,6 +753,8 @@ html, body {
     font-weight: bold;
     line-height: 1.15;
     text-align: right;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .slip-info-row-right .info-line {
