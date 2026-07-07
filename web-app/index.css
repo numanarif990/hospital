@@ -474,236 +474,342 @@ html, body {
   display: none;
 }
 
-/* ===== Print Styles for Thermal Printer (80mm) ===== */
+/* ==========================================================
+   Print Styles — Pixel-perfect match to Flutter PDF output
+   
+   Flutter PDF uses Helvetica as its default font and all
+   measurements are in PDF points (1pt = 1/72 inch).
+   
+   Page: PdfPageFormat.roll80 (80mm ≈ 226.77pt)
+   Margins: left 15pt, right 15pt, top 15pt, bottom 80pt
+   Content area ≈ 196.77pt wide
+   ========================================================== */
 @media print {
   @page {
     size: 80mm auto;
-    margin: 15px 15px 80px 15px;
+    margin: 15pt 15pt 80pt 15pt;
   }
 
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    box-sizing: border-box;
   }
 
-  body {
+  html, body {
     background: #fff !important;
     color: #000 !important;
     margin: 0;
     padding: 0;
-    font-family: 'Courier New', Courier, monospace;
+    /* Helvetica = the default font in Flutter's pdf package */
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    -webkit-font-smoothing: auto;
+    font-size: 10pt;
+    line-height: 1.2;
   }
 
+  /* Hide all app UI during print */
   .password-screen,
   .main-screen,
   .snackbar {
     display: none !important;
   }
 
+  /* ===== Slip Container ===== */
   .print-slip-container {
     display: block !important;
-    width: 80mm;
+    width: 100%;
     padding: 0;
     margin: 0;
-    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-family: 'Helvetica', 'Arial', sans-serif;
     color: #000;
     background: #fff;
   }
 
-  .slip-header {
+  /* ===== Hospital Name Header ===== */
+  /* Flutter: fontSize 10, bold, centered, full-width underline (height 1, border-bottom width 1) */
+  .slip-hospital-header {
     text-align: center;
     width: 100%;
   }
 
-  .slip-header .hospital-name {
+  .slip-hospital-header .hospital-name {
     font-size: 10pt;
     font-weight: bold;
     text-align: center;
     margin: 0;
     padding: 0;
+    line-height: 1.15;
   }
 
-  .slip-header .hospital-name-underline {
+  .slip-hospital-header .hospital-name-underline {
     width: 100%;
-    height: 1px;
-    background: #000;
+    height: 0;
+    border-bottom: 1pt solid #000;
     margin: 0;
   }
 
-  .slip-header .address {
-    font-size: 8.5pt;
+  /* ===== Address & Phone ===== */
+  /* Flutter: fontSize 8.5, normal weight, centered. SizedBox(height:4) then SizedBox(height:2) */
+  .slip-address-block {
     text-align: center;
-    margin-top: 4px;
   }
 
-  .slip-header .phone {
+  .slip-address-block .address {
     font-size: 8.5pt;
+    font-weight: normal;
     text-align: center;
-    margin-top: 2px;
+    margin-top: 4pt;
+    line-height: 1.15;
   }
 
+  .slip-address-block .phone {
+    font-size: 8.5pt;
+    font-weight: normal;
+    text-align: center;
+    margin-top: 2pt;
+    line-height: 1.15;
+  }
+
+  /* ===== OPD Title ===== */
+  /* Flutter: Container width 165, fontSize 12 bold centered, underline (border-bottom width 1) */
+  /* SizedBox(height:12) before, SizedBox(height:8) after */
   .slip-opd-title {
     text-align: center;
-    margin-top: 12px;
+    margin-top: 12pt;
+    margin-bottom: 0;
   }
 
-  .slip-opd-title .opd-text {
+  .slip-opd-title-inner {
+    display: inline-block;
+    width: 165pt;
+    text-align: center;
+  }
+
+  .slip-opd-title-inner .opd-text {
     font-size: 12pt;
     font-weight: bold;
-    display: inline-block;
+    line-height: 1.15;
   }
 
-  .slip-opd-title .opd-underline {
-    width: 165px;
-    height: 1px;
-    background: #000;
-    margin: 0 auto;
+  .slip-opd-title-inner .opd-underline {
+    width: 100%;
+    height: 0;
+    border-bottom: 1pt solid #000;
+    margin: 0;
   }
 
+  /* ===== Token Number Row ===== */
+  /* Flutter: SizedBox(height:8) before. Row: start-aligned, SizedBox(width:30) padding,
+     "Token No:" fontSize 10 bold, SizedBox(width:10), 
+     Circle: 35x35, border 1.5, fontSize 16 bold centered */
   .slip-token-row {
     display: flex;
     align-items: center;
-    margin-top: 8px;
-    padding-left: 30px;
+    margin-top: 8pt;
+    padding-left: 30pt;
   }
 
   .slip-token-row .token-label {
     font-size: 10pt;
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 10pt;
+    line-height: 1;
   }
 
   .slip-token-row .token-circle {
-    width: 35px;
-    height: 35px;
-    border: 1.5px solid #000;
+    width: 35pt;
+    height: 35pt;
+    border: 1.5pt solid #000;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16pt;
     font-weight: bold;
+    line-height: 1;
   }
 
+  /* ===== Physician Section ===== */
+  /* Flutter: SizedBox(height:12) before. Align left, SizedBox width 150.
+     "Physician: ..." fontSize 10 bold,
+     underline container height 0.6 border-bottom 1,
+     SizedBox(height:4), "General Physician" fontSize 10 normal */
   .slip-doctor-section {
-    margin-top: 12px;
-    width: 150px;
+    margin-top: 12pt;
+    width: 150pt;
   }
 
   .slip-doctor-section .physician-name {
     font-size: 10pt;
     font-weight: bold;
+    line-height: 1.15;
   }
 
   .slip-doctor-section .physician-underline {
     width: 100%;
-    height: 0.6px;
-    background: #000;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
   }
 
   .slip-doctor-section .physician-role {
     font-size: 10pt;
-    margin-top: 4px;
+    font-weight: normal;
+    margin-top: 4pt;
+    line-height: 1.15;
   }
 
+  /* ===== Patient Info — Two Column Layout ===== */
+  /* Flutter: SizedBox(height:12) before. Row with spaceBetween, crossAxisAlignment start.
+     Left col: SizedBox width 95. Gap: SizedBox(width:15). Right col: Expanded. */
   .slip-patient-info {
     display: flex;
     justify-content: space-between;
-    margin-top: 12px;
-    gap: 15px;
+    align-items: flex-start;
+    margin-top: 12pt;
   }
 
   .slip-left-col {
-    width: 95px;
+    width: 95pt;
+    flex-shrink: 0;
+  }
+
+  .slip-col-gap {
+    width: 15pt;
     flex-shrink: 0;
   }
 
   .slip-right-col {
     flex: 1;
+    min-width: 0;
   }
 
+  /* ===== Info Row (Left Column) ===== */
+  /* Flutter: Each row = text (8.5pt bold) + SizedBox(height:1) + line (height 0.6, solid black)
+     Rows separated by SizedBox(height:6) */
   .slip-info-row {
-    margin-bottom: 6px;
+    margin-bottom: 6pt;
+  }
+
+  .slip-info-row:last-child {
+    margin-bottom: 0;
   }
 
   .slip-info-row .info-text {
     font-size: 8.5pt;
     font-weight: bold;
+    line-height: 1.15;
   }
 
   .slip-info-row .info-line {
     width: 100%;
-    height: 0.6px;
-    background: #000;
-    margin-top: 1px;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
+    margin-top: 1pt;
   }
 
-  .slip-info-row-flex {
+  /* ===== Info Row with Flex (Right Column) ===== */
+  /* Flutter: Each row = Row [ Expanded(label), value ] both 8.5pt bold
+     + SizedBox(height:1) + line (height 0.6, solid black)
+     Rows separated by SizedBox(height:6) */
+  .slip-info-row-right {
+    margin-bottom: 6pt;
+  }
+
+  .slip-info-row-right:last-child {
+    margin-bottom: 0;
+  }
+
+  .slip-info-row-right .info-row-content {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
+    align-items: baseline;
   }
 
-  .slip-info-row-flex .info-label {
+  .slip-info-row-right .info-label {
     font-size: 8.5pt;
     font-weight: bold;
+    line-height: 1.15;
+    flex: 1;
   }
 
-  .slip-info-row-flex .info-value {
+  .slip-info-row-right .info-value {
     font-size: 8.5pt;
     font-weight: bold;
+    line-height: 1.15;
+    text-align: right;
   }
 
-  .slip-info-row-flex .info-line {
+  .slip-info-row-right .info-line {
     width: 100%;
-    height: 0.6px;
-    background: #000;
-    margin-top: 1px;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
+    margin-top: 1pt;
   }
 
+  /* ===== Full-Width Separator ===== */
+  /* Flutter: SizedBox(height:8) before, Container full-width height 0.6 black */
   .slip-separator {
     width: 100%;
-    height: 0.6px;
-    background: #000;
-    margin-top: 8px;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
+    margin-top: 8pt;
   }
 
+  /* ===== Total Section ===== */
+  /* Flutter: SizedBox(height:8) before. Align right. 
+     Line (width 80, height 0.6) + SizedBox(height:4) + 
+     "Total Rs: 500" fontSize 12 bold + SizedBox(height:4) +
+     Line (width 80, height 0.6) */
   .slip-total-section {
-    text-align: right;
-    margin-top: 8px;
+    margin-top: 8pt;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
   }
 
   .slip-total-section .total-line {
-    width: 80px;
-    height: 0.6px;
-    background: #000;
-    margin-left: auto;
+    width: 80pt;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
   }
 
   .slip-total-section .total-text {
     font-size: 12pt;
     font-weight: bold;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+    line-height: 1.15;
+    text-align: right;
   }
 
+  /* ===== Operator ===== */
+  /* Flutter: SizedBox(height:32) before. Left aligned, fontSize 10, normal weight */
   .slip-operator {
     text-align: left;
     font-size: 10pt;
-    margin-top: 32px;
+    font-weight: normal;
+    margin-top: 32pt;
+    line-height: 1.15;
   }
 
+  /* ===== Bottom Separator ===== */
+  /* Flutter: SizedBox(height:4) before, line 0.6 */
   .slip-bottom-separator {
     width: 100%;
-    height: 0.6px;
-    background: #000;
-    margin-top: 4px;
+    height: 0;
+    border-bottom: 0.6pt solid #000;
+    margin-top: 4pt;
   }
 
+  /* ===== Powered By ===== */
+  /* Flutter: SizedBox(height:4) before, fontSize 8, centered */
   .slip-powered-by {
     text-align: center;
     font-size: 8pt;
-    margin-top: 4px;
+    font-weight: normal;
+    margin-top: 4pt;
+    line-height: 1.15;
   }
 }
 

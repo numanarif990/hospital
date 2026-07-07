@@ -249,19 +249,21 @@
     const doctorName = fields.doctorName.value.trim();
 
     return `
-      <div class="slip-header">
+      <div class="slip-hospital-header">
         <div class="hospital-name">Mirza Abdul Qayyum Memorial Hospital</div>
         <div class="hospital-name-underline"></div>
       </div>
 
-      <div class="slip-header">
+      <div class="slip-address-block">
         <div class="address">213-C, Sec. C/3 Allama Iqbal Road Mirpur A.K</div>
         <div class="phone">Phone: 05827-444 050</div>
       </div>
 
       <div class="slip-opd-title">
-        <div class="opd-text">OPD. CONSULTATION SLIP</div>
-        <div class="opd-underline"></div>
+        <div class="slip-opd-title-inner">
+          <div class="opd-text">OPD. CONSULTATION SLIP</div>
+          <div class="opd-underline"></div>
+        </div>
       </div>
 
       <div class="slip-token-row">
@@ -295,33 +297,29 @@
           </div>
         </div>
 
+        <div class="slip-col-gap"></div>
+
         <div class="slip-right-col">
-          <div class="slip-info-row-flex">
-            <div>
-              <div style="display:flex;justify-content:space-between;">
-                <span class="info-label">Reg. #:</span>
-                <span class="info-value">${regNum}</span>
-              </div>
-              <div class="info-line"></div>
+          <div class="slip-info-row-right">
+            <div class="info-row-content">
+              <span class="info-label">Reg. #:</span>
+              <span class="info-value">${regNum}</span>
             </div>
+            <div class="info-line"></div>
           </div>
-          <div class="slip-info-row-flex">
-            <div>
-              <div style="display:flex;justify-content:space-between;">
-                <span class="info-label">Session#:</span>
-                <span class="info-value">${sessionNum}</span>
-              </div>
-              <div class="info-line"></div>
+          <div class="slip-info-row-right">
+            <div class="info-row-content">
+              <span class="info-label">Session#:</span>
+              <span class="info-value">${sessionNum}</span>
             </div>
+            <div class="info-line"></div>
           </div>
-          <div class="slip-info-row-flex">
-            <div>
-              <div style="display:flex;justify-content:space-between;">
-                <span class="info-label">Con. #:</span>
-                <span class="info-value">${conNum}</span>
-              </div>
-              <div class="info-line"></div>
+          <div class="slip-info-row-right">
+            <div class="info-row-content">
+              <span class="info-label">Con. #:</span>
+              <span class="info-value">${conNum}</span>
             </div>
+            <div class="info-line"></div>
           </div>
         </div>
       </div>
