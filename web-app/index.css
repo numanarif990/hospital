@@ -487,7 +487,7 @@ html, body {
 @media print {
   @page {
     size: 80mm auto;
-    margin: 15pt 15pt 80pt 15pt;
+    margin: 0;
   }
 
   * {
@@ -516,10 +516,14 @@ html, body {
   }
 
   /* ===== Slip Container ===== */
+  /* Total width = exactly 80mm. Padding replicates the Flutter PDF margins:
+     marginLeft: 15pt, marginRight: 15pt, marginTop: 15pt, marginBottom: 80pt
+     This guarantees the receipt never exceeds 80mm on Epson thermal printers. */
   .print-slip-container {
     display: block !important;
-    width: 100%;
-    padding: 0;
+    width: 80mm;
+    max-width: 80mm;
+    padding: 15pt 15pt 80pt 15pt;
     margin: 0;
     font-family: 'Helvetica', 'Arial', sans-serif;
     color: #000;
